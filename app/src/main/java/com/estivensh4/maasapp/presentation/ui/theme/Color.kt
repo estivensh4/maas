@@ -1,4 +1,4 @@
-package com.estivensh4.maasapp.ui.theme
+package com.estivensh4.maasapp.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
