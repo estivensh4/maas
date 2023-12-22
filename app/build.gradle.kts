@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
+    implementation(libs.navigation.compose)
     implementation(libs.material3)
     implementation(libs.ktor.core)
     implementation(libs.ktor.negotiation)

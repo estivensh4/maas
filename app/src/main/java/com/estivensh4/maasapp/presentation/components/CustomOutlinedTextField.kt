@@ -10,20 +10,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,9 +39,12 @@ fun CustomOutlinedTextField(
     regex: String = "",
     isError: Boolean = false,
     errorMessage: String = "",
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    label: String = "",
+    visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     val shape = RoundedCornerShape(12.dp)
+    var focusEnabled by remember { mutableStateOf(false) }
     Column {
         Card(
             shape = shape,
@@ -47,20 +52,31 @@ fun CustomOutlinedTextField(
                 defaultElevation = 8.dp
             )
         ) {
-            OutlinedTextField(
+            TextField(
                 value = value,
-                onValueChange = {
+                label = {
+                    Text(
+                        text = label,
+                        style = if (!focusEnabled) {
+                            if (value.isEmpty()) {
+                                MaterialTheme.typography.titleMedium
+                            } else MaterialTheme.typography.labelMedium
+                        } else {
+                            MaterialTheme.typography.labelMedium
+                        }
+                    )
+                },
+                onValueChange = { newValue ->
                     if (regex.isNotEmpty()) {
-                        if (value.contains(Regex(regex))) onValueChange(value)
+                        if (newValue.contains(Regex(regex))) onValueChange(newValue)
                     } else {
-                        onValueChange(value)
+                        onValueChange(newValue)
                     }
                 },
-                modifier = modifier,
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = Color(0xFFB3B3B3),
-                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                    errorBorderColor = MaterialTheme.colorScheme.error,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .onFocusChanged { focusEnabled = it.isFocused },
+                colors = TextFieldDefaults.colors(
                     focusedTextColor = MaterialTheme.colorScheme.tertiary,
                     unfocusedContainerColor = MaterialTheme.colorScheme.onSurface,
                     focusedContainerColor = MaterialTheme.colorScheme.onSurface,
@@ -68,11 +84,21 @@ fun CustomOutlinedTextField(
                     cursorColor = MaterialTheme.colorScheme.tertiary,
                     errorCursorColor = MaterialTheme.colorScheme.error,
                     disabledContainerColor = Color(0xFFB3B3B3),
-                    disabledBorderColor = Color(0xFF757575),
                     disabledTextColor = Color(0xFF757575),
+                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                    disabledIndicatorColor = Color.Transparent,
+                    errorIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    errorLabelColor = MaterialTheme.colorScheme.error,
+                    errorContainerColor = MaterialTheme.colorScheme.onSurface,
+                    errorTextColor = MaterialTheme.colorScheme.error,
+                    errorPlaceholderColor =MaterialTheme.colorScheme.error,
                 ),
                 shape = shape,
-                enabled = enabled
+                enabled = enabled,
+                visualTransformation = visualTransformation,
+                isError = isError
             )
         }
         AnimatedVisibility(visible = isError) {
@@ -80,7 +106,9 @@ fun CustomOutlinedTextField(
                 text = errorMessage,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp),
                 textAlign = TextAlign.Start
             )
         }
@@ -90,11 +118,12 @@ fun CustomOutlinedTextField(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun CustomOutlinedTextFieldPrev() {
-    var text by rememberSaveable { mutableStateOf("seesse") }
+    var text by rememberSaveable { mutableStateOf("") }
     MaasAppTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             Box(contentAlignment = Alignment.Center) {
                 CustomOutlinedTextField(
+                    label = "Clave",
                     value = text,
                     onValueChange = {
                         text = it
