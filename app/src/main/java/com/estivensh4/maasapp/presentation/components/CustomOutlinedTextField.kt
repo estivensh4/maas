@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,6 +27,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,10 +42,33 @@ fun CustomOutlinedTextField(
     modifier: Modifier = Modifier,
     regex: String = "",
     isError: Boolean = false,
+    readOnly: Boolean = false,
     errorMessage: String = "",
     enabled: Boolean = true,
     label: String = "",
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    inputType: KeyboardType = KeyboardType.Text,
+    imeAction: ImeAction = ImeAction.Next,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    colors: TextFieldColors = TextFieldDefaults.colors(
+        focusedTextColor = MaterialTheme.colorScheme.tertiary,
+        unfocusedContainerColor = MaterialTheme.colorScheme.onSurface,
+        focusedContainerColor = MaterialTheme.colorScheme.onSurface,
+        unfocusedTextColor = Color(0xFF3C3C3C),
+        cursorColor = MaterialTheme.colorScheme.tertiary,
+        errorCursorColor = MaterialTheme.colorScheme.error,
+        disabledContainerColor = Color(0xFFB3B3B3),
+        disabledTextColor = Color(0xFF757575),
+        focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+        disabledIndicatorColor = Color.Transparent,
+        errorIndicatorColor = Color.Transparent,
+        focusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent,
+        errorLabelColor = MaterialTheme.colorScheme.error,
+        errorContainerColor = MaterialTheme.colorScheme.onSurface,
+        errorTextColor = MaterialTheme.colorScheme.error,
+        errorPlaceholderColor = MaterialTheme.colorScheme.error,
+    )
 ) {
     val shape = RoundedCornerShape(12.dp)
     var focusEnabled by remember { mutableStateOf(false) }
@@ -76,29 +103,17 @@ fun CustomOutlinedTextField(
                 modifier = modifier
                     .fillMaxWidth()
                     .onFocusChanged { focusEnabled = it.isFocused },
-                colors = TextFieldDefaults.colors(
-                    focusedTextColor = MaterialTheme.colorScheme.tertiary,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.onSurface,
-                    focusedContainerColor = MaterialTheme.colorScheme.onSurface,
-                    unfocusedTextColor = Color(0xFF3C3C3C),
-                    cursorColor = MaterialTheme.colorScheme.tertiary,
-                    errorCursorColor = MaterialTheme.colorScheme.error,
-                    disabledContainerColor = Color(0xFFB3B3B3),
-                    disabledTextColor = Color(0xFF757575),
-                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    errorLabelColor = MaterialTheme.colorScheme.error,
-                    errorContainerColor = MaterialTheme.colorScheme.onSurface,
-                    errorTextColor = MaterialTheme.colorScheme.error,
-                    errorPlaceholderColor =MaterialTheme.colorScheme.error,
-                ),
+                colors = colors,
                 shape = shape,
                 enabled = enabled,
                 visualTransformation = visualTransformation,
-                isError = isError
+                isError = isError,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = inputType,
+                    imeAction = imeAction
+                ),
+                trailingIcon = trailingIcon,
+                readOnly = readOnly
             )
         }
         AnimatedVisibility(visible = isError) {

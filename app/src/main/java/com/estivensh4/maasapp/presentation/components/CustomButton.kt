@@ -20,6 +20,7 @@ import com.estivensh4.maasapp.presentation.ui.theme.MaasAppTheme
 fun CustomButton(
     text: String,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     val gradient = Brush.horizontalGradient(
@@ -36,6 +37,7 @@ fun CustomButton(
         modifier = Modifier
             .background(gradient, CircleShape)
             .then(modifier),
+        enabled = enabled
     ) {
         Text(
             text = text,
