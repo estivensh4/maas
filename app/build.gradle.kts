@@ -5,6 +5,8 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kotlinSerialization)
+    id("org.jetbrains.kotlinx.kover")
 }
 
 android {
@@ -70,6 +72,7 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.ktor.core)
     implementation(libs.ktor.negotiation)
+    implementation(libs.ktor.server.negotiation)
     implementation(libs.ktor.json)
     implementation(libs.ktor.logging)
     implementation(libs.koin.core)
@@ -77,10 +80,58 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
     testImplementation(libs.junit)
+    testImplementation(libs.junitExt)
+    testImplementation(libs.truth)
+    testImplementation(libs.mock)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.ktor.test)
+    testImplementation(libs.koin.test)
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.junitExt)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.mock)
+    androidTestImplementation(libs.mockwebserver)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+    implementation("org.slf4j:slf4j-simple:2.0.7")
+}
+
+koverReport {
+
+    // filters for all report types of all build variants
+    filters {
+        excludes {
+            classes(
+                "*Fragment",
+                "*Fragment\$*",
+                "*Activity",
+                "*Activity\$*",
+                "*.databinding.*",
+                "*.BuildConfig"
+            )
+        }
+    }
+
+    androidReports("debug") {
+        // filters for all report types only of 'release' build type
+        filters {
+            excludes {
+                classes(
+                    "*Fragment",
+                    "*Fragment\$*",
+                    "*Activity",
+                    "*Activity\$*",
+                    "*.databinding.*",
+                    "*.BuildConfig",
+
+                    // excludes debug classes
+                    "*.DebugUtil"
+                )
+            }
+        }
+    }
 }
