@@ -29,7 +29,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.estivensh4.maasapp.presentation.ui.theme.MaasAppTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomOutlinedTextField(
     value: String,
