@@ -50,8 +50,8 @@ fun <T> CustomExposedDropdown(
     position: (Int) -> String,
     selectOptionChange: (T) -> Unit,
     errorMessage: String = "",
+    isError: Boolean = false
 ) {
-    val localSpacing = LocalSpacing.current
     var expanded by remember { mutableStateOf(false) }
     var textFieldSize by remember { mutableIntStateOf(0) }
     ExposedDropdownMenuBox(
@@ -85,7 +85,7 @@ fun <T> CustomExposedDropdown(
                 focusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             ),
             errorMessage = errorMessage,
-            isError = false,
+            isError = isError,
             readOnly = true,
             modifier = Modifier
                 .menuAnchor()

@@ -12,6 +12,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.estivensh4.maasapp.domain.model.Screen
+import com.estivensh4.maasapp.presentation.screens.DashboardScreen
+import com.estivensh4.maasapp.presentation.screens.FormScreen
 import com.estivensh4.maasapp.presentation.screens.LoginScreen
 import com.estivensh4.maasapp.presentation.ui.theme.MaasAppTheme
 
@@ -28,6 +30,25 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable(Screen.LOGIN.name) {
                             LoginScreen(navController = navController)
+                        }
+                        composable(
+                            "${Screen.FORM.name}?documentType={documentType}&" +
+                                "documentNumber={documentNumber}&" +
+                                "password={password}"
+                        ) {
+                            val bundle = it.arguments ?: Bundle()
+                            val documentType = bundle.getString("documentType").orEmpty()
+                            val documentNumber = bundle.getString("documentNumber").orEmpty()
+                            val password = bundle.getString("password").orEmpty()
+                            FormScreen(
+                                navController = navController,
+                                documentType = documentType,
+                                documentNumber = documentNumber,
+                                password = password
+                            )
+                        }
+                        composable(Screen.DASHBOARD.name) {
+                            DashboardScreen(navController = navController)
                         }
                     }
                 }

@@ -1,9 +1,14 @@
 package com.estivensh4.maasapp.di
 
+import android.content.Context
+import androidx.room.Room
 import com.estivensh4.maasapp.BuildConfig
+import com.estivensh4.maasapp.data.local.MaasDatabase
+import com.estivensh4.maasapp.data.local.dao.UserDao
 import com.estivensh4.maasapp.data.repository.RepositoryImpl
 import com.estivensh4.maasapp.domain.presentation.Repository
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -15,15 +20,27 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val dataModule = module {
-    single<Repository> { RepositoryImpl(get()) }
+    single<Repository> { RepositoryImpl(get(), get()) }
     single { provideHttpClient() }
+    single { provideMaasDatabase(androidContext()) }
+    single { provideUserDao(get()) }
+}
+
+fun provideUserDao(maasDatabase: MaasDatabase): UserDao = maasDatabase.userDao()
+
+fun provideMaasDatabase(context: Context): MaasDatabase {
+    return Room.databaseBuilder(context, MaasDatabase::class.java, "maas_db")
+        .fallbackToDestructiveMigration()
+        .allowMainThreadQueries()
+        .build()
 }
 
 fun provideHttpClient(): HttpClient {
-    return HttpClient {
+    return HttpClient(CIO) {
         install(ContentNegotiation) {
             json(
                 Json {

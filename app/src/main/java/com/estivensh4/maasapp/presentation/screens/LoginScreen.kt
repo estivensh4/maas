@@ -17,8 +17,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.estivensh4.maasapp.domain.model.Screen
 import com.estivensh4.maasapp.presentation.components.CustomButton
 import com.estivensh4.maasapp.presentation.components.CustomExposedDropdown
+import com.estivensh4.maasapp.presentation.components.CustomLoading
 import com.estivensh4.maasapp.presentation.components.CustomOutlinedTextField
 import com.estivensh4.maasapp.presentation.ui.theme.MaasAppTheme
 import com.estivensh4.maasapp.presentation.viewmodel.LoginViewModel
@@ -34,12 +36,18 @@ fun LoginScreen(
     val documentNumber by loginViewModel.documentNumber.collectAsState()
     val password by loginViewModel.password.collectAsState()
     val enabled by loginViewModel.enabled.collectAsState()
+    val isLoading by loginViewModel.isLoading.collectAsState()
     val documentTypeList by loginViewModel.documentTypeList.collectAsState()
+    val isErrorDocumentNumber by loginViewModel.isErrorDocumentNumber.collectAsState()
+    val isErrorPassword by loginViewModel.isErrorPassword.collectAsState()
 
     LaunchedEffect(true) {
         loginViewModel.uiEvent.collect { uiEvent ->
             when (uiEvent) {
-                is UiEvent.Navigate -> navController.navigate(uiEvent.screen)
+                is UiEvent.Navigate -> navController.navigate(uiEvent.screen) {
+                    popUpTo(Screen.LOGIN.name) { inclusive = true }
+                }
+
                 is UiEvent.ShowMessage -> {
 
                 }
@@ -67,7 +75,8 @@ fun LoginScreen(
             onValueChange = loginViewModel::setDocumentNumber,
             label = "Documento",
             errorMessage = "El numero de documento es invalido",
-            inputType = KeyboardType.Number
+            inputType = KeyboardType.Number,
+            isError = isErrorDocumentNumber
         )
         Spacer(modifier = Modifier.size(8.dp))
         CustomOutlinedTextField(
@@ -76,7 +85,8 @@ fun LoginScreen(
             label = "Contraseña",
             visualTransformation = PasswordVisualTransformation(),
             errorMessage = "La contraseña debe tener minimo 8 digitos",
-            inputType = KeyboardType.Password
+            inputType = KeyboardType.Password,
+            isError = isErrorPassword
         )
         Spacer(modifier = Modifier.size(8.dp))
         CustomButton(
@@ -84,10 +94,11 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             onClick = {
-                loginViewModel.onEvent(LoginViewModel.LoginEvents.ValidateForm)
+                loginViewModel.onEvent(LoginViewModel.LoginEvents.ValidateUser)
             }
         )
     }
+    CustomLoading(showProgress = isLoading)
 }
 
 @Preview

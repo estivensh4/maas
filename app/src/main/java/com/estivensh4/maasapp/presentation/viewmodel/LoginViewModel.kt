@@ -1,13 +1,21 @@
 package com.estivensh4.maasapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.estivensh4.maasapp.domain.model.Screen
+import com.estivensh4.maasapp.domain.useCases.UseCases
 import com.estivensh4.maasapp.util.Regex
 import com.estivensh4.maasapp.util.UiEvent
 import com.estivensh4.maasapp.util.containsRegex
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    private val useCases: UseCases
+) : ViewModel() {
 
     private var _documentTypeList = MutableStateFlow<List<String>>(listOf())
     val documentTypeList = _documentTypeList.asStateFlow()
@@ -30,6 +38,12 @@ class LoginViewModel : ViewModel() {
     private var _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
+    private var _isErrorDocumentNumber = MutableStateFlow(false)
+    val isErrorDocumentNumber = _isErrorDocumentNumber.asStateFlow()
+
+    private var _isErrorPassword = MutableStateFlow(false)
+    val isErrorPassword = _isErrorPassword.asStateFlow()
+
     init {
         _documentTypeList.value = listOf(
             "Cedula de ciudadania",
@@ -40,6 +54,7 @@ class LoginViewModel : ViewModel() {
     fun onEvent(event: LoginEvents) {
         when (event) {
             LoginEvents.ValidateForm -> validateForm()
+            LoginEvents.ValidateUser -> validateUser()
         }
     }
 
@@ -58,15 +73,44 @@ class LoginViewModel : ViewModel() {
     fun setDocumentNumber(documentNumber: String) {
         _documentNumber.value = documentNumber
         validateForm()
+        validateDocumentNumber()
     }
 
     fun setPassword(password: String) {
         _password.value = password
         validateForm()
+        validatePassword()
+    }
+
+    private fun validateDocumentNumber() {
+        _isErrorDocumentNumber.value = !_documentNumber.value.containsRegex(Regex.documentNumber)
+    }
+
+    private fun validatePassword() {
+        _isErrorPassword.value = _password.value.length < 8
+    }
+
+    private fun validateUser() {
+        _isLoading.value = true
+        useCases.getUserUseCase(
+            documentNumber = _documentNumber.value,
+            documentType = _documentType.value,
+            password = _password.value
+        ).onEach {
+            val route = if (it != null) Screen.DASHBOARD.name else "${Screen.FORM.name}?" +
+                    "documentType=${_documentType.value}&" +
+                    "documentNumber=${_documentNumber.value}&" +
+                    "password=${_password.value}"
+            delay(3000)
+            _uiEvent.value = UiEvent.Navigate(route)
+            _isLoading.value = false
+        }.launchIn(viewModelScope)
+
     }
 
     sealed interface LoginEvents {
         data object ValidateForm : LoginEvents
+        data object ValidateUser : LoginEvents
     }
 
 }

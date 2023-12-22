@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.kotlinSerialization)
-    id("org.jetbrains.kotlinx.kover")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -76,10 +76,16 @@ dependencies {
     implementation(libs.ktor.server.negotiation)
     implementation(libs.ktor.json)
     implementation(libs.ktor.logging)
+    implementation(libs.ktor.cio)
     implementation(libs.koin.core)
     implementation(libs.koin.compose)
     implementation(libs.koin.android)
     implementation(libs.icons.extended)
+    implementation(libs.room.runtime)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
+    implementation(libs.coil.gif)
+    ksp(libs.room.compiler)
     implementation(libs.koin.androidx.compose)
     testImplementation(libs.junit)
     testImplementation(libs.junitExt)
@@ -100,40 +106,4 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
     implementation("org.slf4j:slf4j-simple:2.0.7")
-}
-
-koverReport {
-
-    // filters for all report types of all build variants
-    filters {
-        excludes {
-            classes(
-                "*Fragment",
-                "*Fragment\$*",
-                "*Activity",
-                "*Activity\$*",
-                "*.databinding.*",
-                "*.BuildConfig"
-            )
-        }
-    }
-
-    androidReports("debug") {
-        // filters for all report types only of 'release' build type
-        filters {
-            excludes {
-                classes(
-                    "*Fragment",
-                    "*Fragment\$*",
-                    "*Activity",
-                    "*Activity\$*",
-                    "*.databinding.*",
-                    "*.BuildConfig",
-
-                    // excludes debug classes
-                    "*.DebugUtil"
-                )
-            }
-        }
-    }
 }
