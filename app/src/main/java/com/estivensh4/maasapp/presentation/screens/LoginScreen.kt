@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -78,7 +80,8 @@ fun LoginScreen(
             label = stringResource(id = R.string.lbl_document_number),
             errorMessage = stringResource(id = R.string.text_error_document_number),
             inputType = KeyboardType.Number,
-            isError = isErrorDocumentNumber
+            isError = isErrorDocumentNumber,
+            testTag = stringResource(id = R.string.test_tag_text_field_document_number)
         )
         Spacer(modifier = Modifier.size(8.dp))
         CustomOutlinedTextField(
@@ -88,13 +91,23 @@ fun LoginScreen(
             visualTransformation = PasswordVisualTransformation(),
             errorMessage = stringResource(id = R.string.text_error_password),
             inputType = KeyboardType.Password,
-            isError = isErrorPassword
+            isError = isErrorPassword,
+            testTag = stringResource(id = R.string.test_tag_text_field_password),
+            imeAction = ImeAction.Send,
+            keyboardActions = KeyboardActions(
+                onSend = {
+                    if (enabled) {
+                        loginViewModel.onEvent(LoginViewModel.LoginEvents.ValidateUser)
+                    }
+                }
+            )
         )
         Spacer(modifier = Modifier.size(8.dp))
         CustomButton(
             text = stringResource(id = R.string.btn_continue),
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
+            testTag = stringResource(id = R.string.test_tag_btn_continue),
             onClick = {
                 loginViewModel.onEvent(LoginViewModel.LoginEvents.ValidateUser)
             }

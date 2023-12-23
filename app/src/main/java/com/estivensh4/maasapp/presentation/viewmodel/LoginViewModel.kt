@@ -28,7 +28,7 @@ class LoginViewModel(
     private var _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    private var _documentType = MutableStateFlow("")
+    private var _documentType = MutableStateFlow("Cedula de ciudadania")
     val documentType = _documentType.asStateFlow()
 
     private var _documentNumber = MutableStateFlow("")
@@ -50,7 +50,10 @@ class LoginViewModel(
     val isErrorPassword = _isErrorPassword.asStateFlow()
 
     init {
-        _documentTypeList.value = context.resources.getStringArray(R.array.documents).toList()
+        _documentTypeList.value = listOf(
+            "Cedula de ciudadania",
+            "Cedula de extranjeria"
+        )
     }
 
     fun onEvent(event: LoginEvents) {

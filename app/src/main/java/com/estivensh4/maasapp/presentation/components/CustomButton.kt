@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +24,7 @@ fun CustomButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     isLoading: Boolean = false,
+    testTag: String = "",
     onClick: () -> Unit
 ) {
     val gradientEnabled = Brush.horizontalGradient(
@@ -39,6 +41,7 @@ fun CustomButton(
             disabledContainerColor = Color.Transparent
         ),
         modifier = Modifier
+            .testTag(testTag)
             .then(if (enabled) Modifier.background(gradientEnabled, CircleShape) else Modifier)
             .then(if (!enabled) Modifier.background(Color(0xFFdddcdc), CircleShape) else Modifier)
             .then(modifier),

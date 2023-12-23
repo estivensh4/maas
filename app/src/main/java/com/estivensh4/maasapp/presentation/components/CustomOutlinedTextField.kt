@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
@@ -50,6 +52,8 @@ fun CustomOutlinedTextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     inputType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next,
+    testTag: String = "",
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     trailingIcon: @Composable (() -> Unit)? = null,
     colors: TextFieldColors = TextFieldDefaults.colors(
         focusedTextColor = MaterialTheme.colorScheme.tertiary,
@@ -103,6 +107,7 @@ fun CustomOutlinedTextField(
                 },
                 singleLine = true,
                 modifier = modifier
+                    .testTag(testTag)
                     .fillMaxWidth()
                     .then(if (isError) Modifier.border(1.dp, Color.Red, shape) else Modifier)
                     .onFocusChanged { focusEnabled = it.isFocused },
@@ -116,7 +121,8 @@ fun CustomOutlinedTextField(
                     imeAction = imeAction
                 ),
                 trailingIcon = trailingIcon,
-                readOnly = readOnly
+                readOnly = readOnly,
+                keyboardActions = keyboardActions
             )
         }
         AnimatedVisibility(visible = isError) {
