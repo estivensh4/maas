@@ -1,7 +1,10 @@
 package com.estivensh4.maasapp.presentation.viewmodel
 
+import android.content.Context
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.estivensh4.maasapp.R
 import com.estivensh4.maasapp.domain.model.GetInformationOutput
 import com.estivensh4.maasapp.domain.useCases.UseCases
 import com.estivensh4.maasapp.util.UiEvent
@@ -15,7 +18,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class DashboardViewModel(
-    private val useCases: UseCases
+    private val useCases: UseCases,
+    private val context: Context
 ) : ViewModel() {
 
     private var _cardNumber = MutableStateFlow("")
@@ -69,13 +73,21 @@ class DashboardViewModel(
                                     .onEach { informationOutput ->
                                         if (informationOutput == null) {
                                             useCases.insertCardUseCase(getInformationOutput)
-                                            _cardList.value = _cardList.value.plus(getInformationOutput)
+                                            _cardList.value =
+                                                _cardList.value.plus(getInformationOutput)
                                             _cardNumber.value = ""
                                             _isLoading.value = false
                                             _uiEvent.send(UiEvent.CloseModal)
                                         } else {
                                             _isLoading.value = false
-                                            _uiEvent.send(UiEvent.ShowMessage("Esta tarjeta ya esta registada"))
+                                            _uiEvent.send(
+                                                UiEvent.ShowMessage(
+                                                    ContextCompat.getString(
+                                                        context,
+                                                        R.string.text_already_card
+                                                    )
+                                                )
+                                            )
                                         }
                                     }.launchIn(this)
                             }.onFailure {
@@ -84,7 +96,14 @@ class DashboardViewModel(
                                 _uiEvent.send(UiEvent.ShowMessage(exception.errorMessage))
                             }
                     } else {
-                        _uiEvent.send(UiEvent.ShowMessage("La tarjeta no es valida"))
+                        _uiEvent.send(
+                            UiEvent.ShowMessage(
+                                ContextCompat.getString(
+                                    context,
+                                    R.string.text_card_invalid
+                                )
+                            )
+                        )
                     }
                 }.onFailure {
                     val exception = it.getException()

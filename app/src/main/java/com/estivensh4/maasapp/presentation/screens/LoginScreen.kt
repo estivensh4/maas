@@ -11,12 +11,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.estivensh4.maasapp.R
 import com.estivensh4.maasapp.domain.model.Screen
 import com.estivensh4.maasapp.presentation.components.CustomButton
 import com.estivensh4.maasapp.presentation.components.CustomExposedDropdown
@@ -63,7 +65,7 @@ fun LoginScreen(
             .padding(16.dp)
     ) {
         CustomExposedDropdown(
-            label = "Tipo de documento",
+            label = stringResource(id = R.string.lbl_document_type),
             options = documentTypeList,
             value = documentType,
             position = { documentTypeList[it] },
@@ -73,8 +75,8 @@ fun LoginScreen(
         CustomOutlinedTextField(
             value = documentNumber,
             onValueChange = loginViewModel::setDocumentNumber,
-            label = "Documento",
-            errorMessage = "El numero de documento es invalido",
+            label = stringResource(id = R.string.lbl_document_number),
+            errorMessage = stringResource(id = R.string.text_error_document_number),
             inputType = KeyboardType.Number,
             isError = isErrorDocumentNumber
         )
@@ -82,15 +84,15 @@ fun LoginScreen(
         CustomOutlinedTextField(
             value = password,
             onValueChange = loginViewModel::setPassword,
-            label = "Contraseña",
+            label = stringResource(id = R.string.lbl_password),
             visualTransformation = PasswordVisualTransformation(),
-            errorMessage = "La contraseña debe tener minimo 8 digitos",
+            errorMessage = stringResource(id = R.string.text_error_password),
             inputType = KeyboardType.Password,
             isError = isErrorPassword
         )
         Spacer(modifier = Modifier.size(8.dp))
         CustomButton(
-            text = "Continuar",
+            text = stringResource(id = R.string.btn_continue),
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             onClick = {

@@ -1,27 +1,32 @@
 package com.estivensh4.maasapp.presentation.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.estivensh4.maasapp.R
 import com.estivensh4.maasapp.domain.model.Screen
 import com.estivensh4.maasapp.domain.useCases.UseCases
 import com.estivensh4.maasapp.util.Regex
 import com.estivensh4.maasapp.util.UiEvent
 import com.estivensh4.maasapp.util.containsRegex
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 
 class LoginViewModel(
-    private val useCases: UseCases
+    private val useCases: UseCases,
+    context: Context
 ) : ViewModel() {
 
     private var _documentTypeList = MutableStateFlow<List<String>>(listOf())
     val documentTypeList = _documentTypeList.asStateFlow()
 
-    private var _uiEvent = MutableStateFlow<UiEvent>(UiEvent.Nothing)
-    val uiEvent = _uiEvent.asStateFlow()
+    private var _uiEvent = Channel<UiEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
 
     private var _documentType = MutableStateFlow("")
     val documentType = _documentType.asStateFlow()
@@ -45,10 +50,7 @@ class LoginViewModel(
     val isErrorPassword = _isErrorPassword.asStateFlow()
 
     init {
-        _documentTypeList.value = listOf(
-            "Cedula de ciudadania",
-            "Cedula de extranjeria"
-        )
+        _documentTypeList.value = context.resources.getStringArray(R.array.documents).toList()
     }
 
     fun onEvent(event: LoginEvents) {
@@ -102,7 +104,7 @@ class LoginViewModel(
                     "documentNumber=${_documentNumber.value}&" +
                     "password=${_password.value}"
             delay(3000)
-            _uiEvent.value = UiEvent.Navigate(route)
+            _uiEvent.send(UiEvent.Navigate(route))
             _isLoading.value = false
         }.launchIn(viewModelScope)
 

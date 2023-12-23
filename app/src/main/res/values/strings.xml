@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">MaasApp</string>
+    <string name="btn_continue">Continuar</string>
+    <string name="btn_register">Registrarme</string>
+    <string name="btn_delete">Eliminar</string>
+    <string name="btn_cancel">Cancelar</string>
+    <string name="btn_add">Añadir</string>
+
+    <string name="lbl_email">Correo electrónico</string>
+    <string name="lbl_address">Dirección</string>
+    <string name="lbl_full_name">Nombre completo</string>
+    <string name="lbl_password">Contraseña</string>
+    <string name="lbl_document_type">Tipo de documento</string>
+    <string name="lbl_document_number">Número de documento</string>
+
+    <string name="text_error_email">El correo es inválido</string>
+    <string name="text_error_address">La dirección es inválida</string>
+    <string name="text_error_full_name">El nombre es inválido</string>
+    <string name="text_error_password">La contraseña debe tener mínimo 8 dígitos</string>
+    <string name="text_error_document_number">El número de documento es inválido</string>
+
+    <string name="text_card_number">Número de tarjeta</string>
+    <string name="text_empty_card_list">No tienes tarjetas agregadas</string>
+    <string name="text_delete_card">¿Está seguro que deseas eliminar esta tarjeta %1$s ?</string>
+    <string name="text_already_card">Esta tarjeta ya está registrada</string>
+    <string name="text_card_invalid">La tarjeta no es valida</string>
 </resources>

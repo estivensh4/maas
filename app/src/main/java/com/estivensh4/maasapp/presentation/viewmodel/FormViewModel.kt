@@ -8,9 +8,11 @@ import com.estivensh4.maasapp.domain.useCases.UseCases
 import com.estivensh4.maasapp.util.Regex
 import com.estivensh4.maasapp.util.UiEvent
 import com.estivensh4.maasapp.util.containsRegex
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class FormViewModel(
@@ -32,8 +34,8 @@ class FormViewModel(
     private var _enabled = MutableStateFlow(false)
     val enabled = _enabled.asStateFlow()
 
-    private var _uiEvent = MutableStateFlow<UiEvent>(UiEvent.Nothing)
-    val uiEvent = _uiEvent.asStateFlow()
+    private var _uiEvent = Channel<UiEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
 
     private var _isErrorFullName = MutableStateFlow(false)
     val isErrorFullName = _isErrorFullName.asStateFlow()
@@ -109,7 +111,7 @@ class FormViewModel(
             )
             delay(2000)
             _isLoading.value = false
-            _uiEvent.value = UiEvent.Navigate(Screen.DASHBOARD.name)
+            _uiEvent.send(UiEvent.Navigate(Screen.DASHBOARD.name))
         }
     }
 

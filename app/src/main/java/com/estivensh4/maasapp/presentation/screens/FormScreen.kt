@@ -6,16 +6,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.estivensh4.maasapp.R
 import com.estivensh4.maasapp.domain.model.Screen
 import com.estivensh4.maasapp.presentation.components.CustomButton
 import com.estivensh4.maasapp.presentation.components.CustomLoading
@@ -65,29 +64,29 @@ fun FormScreen(
         CustomOutlinedTextField(
             value = fullName,
             onValueChange = formViewModel::setFullName,
-            label = "Nombre completo",
-            errorMessage = "El nombre es invalido",
+            label = stringResource(id = R.string.lbl_full_name),
+            errorMessage = stringResource(id = R.string.text_error_full_name),
             isError = isErrorFullName
         )
         Spacer(modifier = Modifier.size(8.dp))
         CustomOutlinedTextField(
             value = address,
             onValueChange = formViewModel::setAddress,
-            label = "Direccion",
-            errorMessage = "La direccion es invalida",
+            label = stringResource(id = R.string.lbl_address),
+            errorMessage = stringResource(id = R.string.text_error_address),
             isError = isErrorAddress
         )
         Spacer(modifier = Modifier.size(8.dp))
         CustomOutlinedTextField(
             value = email,
             onValueChange = formViewModel::setEmail,
-            label = "Correo electronico",
-            errorMessage = "El correo es invalido",
+            label = stringResource(id = R.string.lbl_email),
+            errorMessage = stringResource(id = R.string.text_error_email),
             isError = isErrorEmail
         )
         Spacer(modifier = Modifier.size(8.dp))
         CustomButton(
-            text = "Registrarme",
+            text = stringResource(id = R.string.btn_register),
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             onClick = {

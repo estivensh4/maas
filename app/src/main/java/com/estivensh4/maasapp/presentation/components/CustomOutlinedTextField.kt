@@ -2,6 +2,7 @@ package com.estivensh4.maasapp.presentation.components
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -103,6 +104,7 @@ fun CustomOutlinedTextField(
                 singleLine = true,
                 modifier = modifier
                     .fillMaxWidth()
+                    .then(if (isError) Modifier.border(1.dp, Color.Red, shape) else Modifier)
                     .onFocusChanged { focusEnabled = it.isFocused },
                 colors = colors,
                 shape = shape,

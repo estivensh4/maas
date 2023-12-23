@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.estivensh4.maasapp.R
@@ -139,11 +140,11 @@ fun DashboardScreen(
                 CustomOutlinedTextField(
                     value = cardNumber,
                     onValueChange = dashboardViewModel::setCardNumber,
-                    label = "Numero de tarjeta"
+                    label = stringResource(id = R.string.text_card_number)
                 )
                 Spacer(modifier = Modifier.size(8.dp))
                 CustomButton(
-                    text = "Añadir",
+                    text = stringResource(id = R.string.btn_add),
                     modifier = Modifier.fillMaxWidth(),
                     enabled = enabled,
                     isLoading = isLoading
@@ -175,7 +176,7 @@ fun DashboardScreen(
             Column(modifier = Modifier.padding(paddingValues)) {
                 if (cardList.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(text = "No tienes tarjetas agregadas")
+                        Text(text = stringResource(id = R.string.text_empty_card_list))
                     }
                 } else {
 
@@ -232,9 +233,8 @@ fun DashboardScreen(
                             shadowSide = CardShadowSide.ShadowTop,
                             orientation = Orientation.Vertical,
                             heightCard = 250.dp,
-                            betweenMargin = 40.dp,
-
-                            ) { item ->
+                            betweenMargin = 40.dp
+                        ) { item ->
                             Card(
                                 elevation = CardDefaults.cardElevation(
                                     defaultElevation = 10.dp,
@@ -309,12 +309,12 @@ fun AlertDialogDelete(
         },
         title = {
             Text(
-                text = "Eliminar",
+                text = stringResource(id = R.string.btn_delete),
                 color = Color.Black
             )
         },
         text = {
-            Text(text = "¿Esta seguro que deseas eliminar esta tarjeta $cardNumber?")
+            Text(text = stringResource(id = R.string.text_delete_card, cardNumber))
         },
         onDismissRequest = {
             onDismissRequest()
@@ -325,7 +325,7 @@ fun AlertDialogDelete(
                     onConfirmation()
                 }
             ) {
-                Text("Eliminar")
+                Text(stringResource(id = R.string.btn_delete))
             }
         },
         dismissButton = {
@@ -334,7 +334,7 @@ fun AlertDialogDelete(
                     onDismissRequest()
                 }
             ) {
-                Text("Cancelar")
+                Text(stringResource(id = R.string.btn_cancel))
             }
         }
     )
