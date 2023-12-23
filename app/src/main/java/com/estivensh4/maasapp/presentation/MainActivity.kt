@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                 Surface {
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.LOGIN.name
+                        startDestination = Screen.DASHBOARD.name
                     ) {
                         composable(Screen.LOGIN.name) {
                             LoginScreen(navController = navController)

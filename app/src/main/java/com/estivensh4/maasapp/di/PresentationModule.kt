@@ -10,5 +10,5 @@ import org.koin.dsl.module
 val presentationModule = module {
     viewModel { LoginViewModel(get(), androidContext()) }
     viewModel { FormViewModel(get()) }
-    single { DashboardViewModel(get(), androidContext()) }
+    viewModel { DashboardViewModel(get()) }
 }
