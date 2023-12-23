@@ -8,13 +8,17 @@ import com.estivensh4.maasapp.domain.model.GetInformationOutput
 import com.estivensh4.maasapp.domain.model.User
 import com.estivensh4.maasapp.domain.model.ValidCardOutput
 import com.estivensh4.maasapp.domain.presentation.Repository
+import com.estivensh4.maasapp.util.CustomException
+import com.estivensh4.maasapp.util.toLocalException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.http.HttpStatusCode
+import io.ktor.util.InternalAPI
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.w3c.dom.DocumentType
 
+@OptIn(InternalAPI::class)
 class RepositoryImpl(
     private val httpClient: HttpClient,
     private val userDao: UserDao
@@ -23,7 +27,17 @@ class RepositoryImpl(
     override suspend fun validCard(card: String): Result<ValidCardOutput> {
         return try {
             val result = httpClient.get("${ENDPOINT_VALID_CARD}/$card")
-            Result.success(result.body())
+            if (result.status == HttpStatusCode.BadRequest) {
+                val exception = result.content.toLocalException()
+                Result.failure(
+                    CustomException(
+                        errorCode = exception?.errorCode.orEmpty(),
+                        errorMessage = exception?.errorMessage.orEmpty(),
+                    )
+                )
+            } else {
+                Result.success(result.body())
+            }
         } catch (exception: Exception) {
             Result.failure(exception)
         }

@@ -2,9 +2,9 @@ package com.estivensh4.maasapp.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.estivensh4.maasapp.presentation.ui.theme.MaasAppTheme
 
 @Composable
@@ -21,6 +20,7 @@ fun CustomButton(
     text: String,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    isLoading: Boolean = false,
     onClick: () -> Unit
 ) {
     val gradient = Brush.horizontalGradient(
@@ -39,10 +39,14 @@ fun CustomButton(
             .then(modifier),
         enabled = enabled
     ) {
-        Text(
-            text = text,
-            fontWeight = FontWeight.Medium
-        )
+        if (isLoading) {
+            CircularProgressIndicator()
+        } else {
+            Text(
+                text = text,
+                fontWeight = FontWeight.Medium
+            )
+        }
     }
 }
 

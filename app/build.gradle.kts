@@ -1,7 +1,6 @@
 import java.io.FileInputStream
 import java.util.Properties
 
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
@@ -85,8 +84,10 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
     implementation(libs.coil.gif)
+    implementation(libs.kotlinx.serialization.json)
     ksp(libs.room.compiler)
     implementation(libs.koin.androidx.compose)
+    implementation("com.github.YusufbekIbragimov:SwipeCard:1.0.1")
     testImplementation(libs.junit)
     testImplementation(libs.junitExt)
     testImplementation(libs.truth)
