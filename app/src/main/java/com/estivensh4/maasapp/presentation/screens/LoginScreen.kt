@@ -7,12 +7,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -66,6 +69,17 @@ fun LoginScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        Text(
+            text = stringResource(id = R.string.text_login_or_register),
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold
+            )
+        )
+        Text(
+            text = stringResource(id = R.string.description_login_or_register),
+            style = MaterialTheme.typography.titleMedium
+        )
+        Spacer(modifier = Modifier.size(24.dp))
         CustomExposedDropdown(
             label = stringResource(id = R.string.lbl_document_type),
             options = documentTypeList,

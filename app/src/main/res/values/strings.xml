@@ -24,6 +24,13 @@
     <string name="text_delete_card">¿Está seguro que deseas eliminar esta tarjeta %1$s ?</string>
     <string name="text_already_card">Esta tarjeta ya está registrada</string>
     <string name="text_card_invalid">La tarjeta no es valida</string>
+    <string name="text_login_or_register">Inicia sesion y registrate</string>
+    <string name="text_register">Registrate</string>
+    <string name="text_dashboard">Tus tarjetas</string>
+    <string name="text_register_card">Añadir nueva tarjeta</string>
+
+    <string name="description_login_or_register">Escribe el número de documento y contraseña para registrate o iniciar sesion</string>
+    <string name="description_register">Escribe tu nombre completo, direccion y correo electronico para completar tu registro</string>
 
 
     <string name="test_tag_text_field_document_number">documentNumberTestTag</string>

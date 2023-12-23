@@ -50,6 +50,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.estivensh4.maasapp.R
@@ -118,6 +120,13 @@ fun DashboardScreen(
                 modifier = Modifier.padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text(
+                    text = stringResource(id = R.string.text_register_card),
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+                Spacer(modifier = Modifier.size(24.dp))
                 AnimatedVisibility(visible = !showKeyboard) {
                     Column {
                         Card(
@@ -142,7 +151,7 @@ fun DashboardScreen(
                     onValueChange = dashboardViewModel::setCardNumber,
                     label = stringResource(id = R.string.text_card_number)
                 )
-                Spacer(modifier = Modifier.size(8.dp))
+                Spacer(modifier = Modifier.size(12.dp))
                 CustomButton(
                     text = stringResource(id = R.string.btn_add),
                     modifier = Modifier.fillMaxWidth(),
@@ -174,6 +183,17 @@ fun DashboardScreen(
             }
         ) { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
+                Text(
+                    text = stringResource(id = R.string.text_dashboard),
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                )
+                Spacer(modifier = Modifier.size(24.dp))
                 if (cardList.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(text = stringResource(id = R.string.text_empty_card_list))

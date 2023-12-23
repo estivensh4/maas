@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.estivensh4.maasapp.R
@@ -61,6 +64,17 @@ fun FormScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        Text(
+            text = stringResource(id = R.string.text_register),
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold
+            )
+        )
+        Text(
+            text = stringResource(id = R.string.description_register),
+            style = MaterialTheme.typography.titleMedium
+        )
+        Spacer(modifier = Modifier.size(24.dp))
         CustomOutlinedTextField(
             value = fullName,
             onValueChange = formViewModel::setFullName,
