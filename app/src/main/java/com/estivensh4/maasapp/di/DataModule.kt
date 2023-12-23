@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.estivensh4.maasapp.BuildConfig
 import com.estivensh4.maasapp.data.local.MaasDatabase
+import com.estivensh4.maasapp.data.local.dao.CardDao
 import com.estivensh4.maasapp.data.local.dao.UserDao
 import com.estivensh4.maasapp.data.repository.RepositoryImpl
 import com.estivensh4.maasapp.domain.presentation.Repository
@@ -24,13 +25,16 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val dataModule = module {
-    single<Repository> { RepositoryImpl(get(), get()) }
+    single<Repository> { RepositoryImpl(get(), get(), get()) }
     single { provideHttpClient() }
     single { provideMaasDatabase(androidContext()) }
     single { provideUserDao(get()) }
+    single { provideCardDao(get()) }
 }
 
 fun provideUserDao(maasDatabase: MaasDatabase): UserDao = maasDatabase.userDao()
+
+fun provideCardDao(maasDatabase: MaasDatabase): CardDao = maasDatabase.cardDao()
 
 fun provideMaasDatabase(context: Context): MaasDatabase {
     return Room.databaseBuilder(context, MaasDatabase::class.java, "maas_db")

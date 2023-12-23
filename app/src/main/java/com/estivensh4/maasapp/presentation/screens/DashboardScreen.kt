@@ -5,33 +5,49 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -54,9 +70,12 @@ fun DashboardScreen(
     navController: NavController,
     dashboardViewModel: DashboardViewModel = koinViewModel()
 ) {
+    val focusManager = LocalFocusManager.current
+    var showAlert by remember { mutableStateOf(false) }
+    var itemDelete by remember { mutableStateOf(GetInformationOutput()) }
     val sheetState = rememberBottomSheetScaffoldState(
         bottomSheetState = SheetState(
-            skipPartiallyExpanded = true,
+            skipPartiallyExpanded = false,
             initialValue = SheetValue.Hidden
         )
     )
@@ -64,6 +83,7 @@ fun DashboardScreen(
     val cardNumber by dashboardViewModel.cardNumber.collectAsState()
     val enabled by dashboardViewModel.enabled.collectAsState()
     val isLoading by dashboardViewModel.isLoading.collectAsState()
+    val cardList by dashboardViewModel.cardList.collectAsState()
 
     LaunchedEffect(true) {
         dashboardViewModel.uiEvent.collect { uiEvent ->
@@ -71,6 +91,13 @@ fun DashboardScreen(
                 is UiEvent.ShowMessage -> {
                     scope.launch {
                         sheetState.snackbarHostState.showSnackbar(uiEvent.message)
+                    }
+                }
+
+                UiEvent.CloseModal -> {
+                    scope.launch {
+                        focusManager.clearFocus()
+                        sheetState.bottomSheetState.hide()
                     }
                 }
 
@@ -135,77 +162,180 @@ fun DashboardScreen(
                         scope.launch {
                             sheetState.bottomSheetState.expand()
                         }
-                    }
+                    },
+                    contentColor = Color.White
                 ) {
-                    Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Rounded.Add,
+                        contentDescription = null
+                    )
                 }
             }
         ) { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
-                val list = listOf(
-                    GetInformationOutput(
-                        cardNumber = "1010000008551426",
-                        profileEs = "e",
-                        profileCode = "",
-                        profile = "ese",
-                        bankCode = "co",
-                        bankName = "Bancolombia",
-                        userName = "Test",
-                        userLastName = "User"
-                    ),
-                    GetInformationOutput(
-                        cardNumber = "1010000008553091",
-                        profileEs = "e",
-                        profileCode = "",
-                        profile = "ese",
-                        bankCode = "co",
-                        bankName = "Bancolombia",
-                        userName = "Pepito",
-                        userLastName = "Perez"
-                    ),
-                    GetInformationOutput(
-                        cardNumber = "1010000008553067",
-                        profileEs = "e",
-                        profileCode = "",
-                        profile = "ese",
-                        bankCode = "co",
-                        bankName = "Bancolombia",
-                        userName = "Pepita",
-                        userLastName = "Perez"
-                    )
-                )
-                SwipeCard(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    itemsList = list.toMutableList(),
-                    shadowSide = CardShadowSide.ShadowTop,
-                    orientation = Orientation.Vertical,
-                    heightCard = 250.dp,
-                    betweenMargin = 40.dp,
-                ) { item ->
-                    Card(
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 10.dp,
-                        )
-                    ) {
-                        Box {
-                            Image(
-                                painter = painterResource(id = R.drawable.card),
-                                contentDescription = null,
-                                modifier = Modifier.fillMaxWidth(),
-                                contentScale = ContentScale.Crop
-                            )
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.BottomStart)
-                                    .padding(16.dp)
+                if (cardList.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(text = "No tienes tarjetas agregadas")
+                    }
+                } else {
+
+                    if (cardList.size == 1) {
+                        LazyColumn(
+                            contentPadding = PaddingValues(16.dp)
+                        ) {
+                            items(cardList) { item ->
+                                Card(
+                                    elevation = CardDefaults.cardElevation(
+                                        defaultElevation = 10.dp,
+                                    )
+                                ) {
+                                    Box {
+                                        Image(
+                                            painter = painterResource(id = R.drawable.card),
+                                            contentDescription = null,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                        Column(
+                                            modifier = Modifier
+                                                .align(Alignment.BottomStart)
+                                                .padding(16.dp)
+                                        ) {
+                                            Text(text = item.userName)
+                                            Text(text = item.cardNumber)
+                                        }
+                                        FilledIconButton(
+                                            onClick = {
+                                                itemDelete = item
+                                                showAlert = true
+                                            },
+                                            colors = IconButtonDefaults.filledIconButtonColors(
+                                                containerColor = MaterialTheme.colorScheme.error
+                                            ),
+                                            modifier = Modifier
+                                                .align(Alignment.BottomEnd)
+                                                .padding(16.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.Delete,
+                                                contentDescription = null
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        SwipeCard(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            itemsList = cardList.toMutableList(),
+                            shadowSide = CardShadowSide.ShadowTop,
+                            orientation = Orientation.Vertical,
+                            heightCard = 250.dp,
+                            betweenMargin = 40.dp,
+
+                            ) { item ->
+                            Card(
+                                elevation = CardDefaults.cardElevation(
+                                    defaultElevation = 10.dp,
+                                )
                             ) {
-                                Text(text = "${item.userName} ${item.userLastName}")
-                                Text(text = item.cardNumber)
+                                Box {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.card),
+                                        contentDescription = null,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                    Column(
+                                        modifier = Modifier
+                                            .align(Alignment.BottomStart)
+                                            .padding(16.dp)
+                                    ) {
+                                        Text(text = item.userName)
+                                        Text(text = item.cardNumber)
+                                    }
+                                    FilledIconButton(
+                                        onClick = {
+                                            itemDelete = item
+                                            showAlert = true
+                                        },
+                                        colors = IconButtonDefaults.filledIconButtonColors(
+                                            containerColor = MaterialTheme.colorScheme.error
+                                        ),
+                                        modifier = Modifier
+                                            .align(Alignment.BottomEnd)
+                                            .padding(16.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Delete,
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
+            AnimatedVisibility(visible = showAlert) {
+                AlertDialogDelete(
+                    onDismissRequest = {
+                        showAlert = false
+                    },
+                    cardNumber = itemDelete.cardNumber
+                ) {
+                    dashboardViewModel.onEvent(
+                        DashboardViewModel.DashboardEvents.DeleteCard(itemDelete)
+                    )
+                    showAlert = false
+                }
+            }
         }
     }
+}
+
+
+@Composable
+fun AlertDialogDelete(
+    cardNumber: String,
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+) {
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.onSurface,
+        icon = {
+            Icon(Icons.Rounded.Info, contentDescription = null)
+        },
+        title = {
+            Text(
+                text = "Eliminar",
+                color = Color.Black
+            )
+        },
+        text = {
+            Text(text = "¿Esta seguro que deseas eliminar esta tarjeta $cardNumber?")
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("Eliminar")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Cancelar")
+            }
+        }
+    )
 }

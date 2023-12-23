@@ -100,6 +100,7 @@ fun CustomOutlinedTextField(
                         onValueChange(newValue)
                     }
                 },
+                singleLine = true,
                 modifier = modifier
                     .fillMaxWidth()
                     .onFocusChanged { focusEnabled = it.isFocused },

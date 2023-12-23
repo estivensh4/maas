@@ -5,5 +5,9 @@ data class UseCases(
     val getInformationCardUseCase: GetInformationCardUseCase,
     val validCardUseCase: ValidCardUseCase,
     val insertUserUseCase: InsertUserUseCase,
-    val getUserUseCase: GetUserUseCase
+    val getUserUseCase: GetUserUseCase,
+    val getAllCardsUseCase: GetAllCardsUseCase,
+    val deleteCardUseCase: DeleteCardUseCase,
+    val insertCardUseCase: InsertCardUseCase,
+    val getCardUseCase: GetCardUseCase
 )

@@ -44,7 +44,7 @@ fun CustomButton(
         } else {
             Text(
                 text = text,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Bold
             )
         }
     }

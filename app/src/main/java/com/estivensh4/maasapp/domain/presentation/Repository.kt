@@ -11,5 +11,9 @@ interface Repository {
     suspend fun getInformationCard(card: String): Result<GetInformationOutput>
     suspend fun getBalanceCard(card: String): Result<GetBalanceCardOutput>
     suspend fun insertUser(user: User)
+    suspend fun insertCard(card: GetInformationOutput)
+    suspend fun deleteCard(cardNumber: String)
     fun getUser(documentType: String, documentNumber: String, password: String): Flow<User?>
+    fun getCard(cardNumber: String): Flow<GetInformationOutput?>
+    fun getAllCards(): Flow<List<GetInformationOutput>>
 }
